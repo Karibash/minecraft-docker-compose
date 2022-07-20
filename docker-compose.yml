@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  minecraft:
+    image: itzg/minecraft-server:java8
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: TRUE
+      TYPE: MOHIST
+      DEBUG: TRUE
+      VERSION: 1.12.2
+      DIFFICULTY: normal
+      MEMORY: 1G
+      TZ: Asia/Tokyo
+      ENABLE_WHITELIST: TRUE
+      ENFORCE_WHITELIST: TRUE
+      COPY_CONFIG_DEST: /data
+      SYNC_SKIP_NEWER_IN_DESTINATION: FALSE
+    volumes:
+      - minecraft:/data
+      - ./configs:/config
+      - ./mods:/mods:ro
+      - ./plugins:/plugins:ro
+
+  backup:
+    image: itzg/mc-backup
+    environment:
+      TZ: Asia/Tokyo
+      BACKUP_INTERVAL: "1h"
+      RCON_HOST: minecraft
+      RCON_PASSWORD: minecraft
+    volumes:
+      - minecraft:/data:ro
+      - ./backups:/backups
+
+  rcon:
+    image: itzg/rcon
+    ports:
+      - "4326:4326"
+      - "4327:4327"
+    environment:
+      TZ: Asia/Tokyo
+      RWA_ADMIN: TRUE
+      RWA_USERNAME: administrator
+      RWA_PASSWORD: administrator
+      RWA_RCON_HOST: minecraft
+      RWA_RCON_PASSWORD: minecraft
+    volumes:
+      - rcon:/opt/rcon-web-admin/db
+
+volumes:
+  minecraft:
+  rcon:
