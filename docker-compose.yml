@@ -49,6 +49,30 @@ services:
     volumes:
       - rcon:/opt/rcon-web-admin/db
 
+  coreprotect-db:
+    image: mysql:5.7
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: coreprotect
+      MYSQL_DATABASE: coreprotect
+      MYSQL_USER: coreprotect
+      MYSQL_PASSWORD: coreprotect
+    volumes:
+      - coreprotect-db:/var/lib/mysql
+
+  dynmap-db:
+    image: mysql:5.7
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: dynmap
+      MYSQL_DATABASE: dynmap
+      MYSQL_USER: dynmap
+      MYSQL_PASSWORD: dynmap
+    volumes:
+      - dynmap-db:/var/lib/mysql
+
 volumes:
   minecraft:
   rcon:
+  coreprotect-db:
+  dynmap-db:
