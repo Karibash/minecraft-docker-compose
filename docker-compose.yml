@@ -8,6 +8,7 @@ services:
     depends_on:
       - coreprotect-db
       - dynmap-db
+      - luckperms-db
     environment:
       EULA: TRUE
       TYPE: MOHIST
@@ -78,8 +79,20 @@ services:
     volumes:
       - dynmap-db:/var/lib/mysql
 
+  luckperms-db:
+    image: mysql:5.7
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: luckperms
+      MYSQL_DATABASE: luckperms
+      MYSQL_USER: luckperms
+      MYSQL_PASSWORD: luckperms
+    volumes:
+      - luckperms-db:/var/lib/mysql
+
 volumes:
   minecraft:
   rcon:
   coreprotect-db:
   dynmap-db:
+  luckperms-db:
