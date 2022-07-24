@@ -5,6 +5,9 @@ services:
     image: itzg/minecraft-server:java8
     ports:
       - "25565:25565"
+    depends_on:
+      - coreprotect-db
+      - dynmap-db
     environment:
       EULA: TRUE
       TYPE: MOHIST
@@ -25,6 +28,8 @@ services:
 
   backup:
     image: itzg/mc-backup
+    depends_on:
+      - minecraft
     environment:
       TZ: Asia/Tokyo
       BACKUP_INTERVAL: "1h"
@@ -36,6 +41,8 @@ services:
 
   rcon:
     image: itzg/rcon
+    depends_on:
+      - minecraft
     ports:
       - "4326:4326"
       - "4327:4327"
