@@ -10,6 +10,8 @@ services:
       - dynmap-db
       - luckperms-db
     environment:
+      UID: 82
+      GID: 82
       EULA: TRUE
       TYPE: MOHIST
       DEBUG: TRUE
@@ -24,7 +26,8 @@ services:
       SYNC_SKIP_NEWER_IN_DESTINATION: FALSE
     volumes:
       - minecraft:/data
-      - ./configs:/config
+      - dynmap-web:/data/dynmap/web
+      - ./configs:/config:ro
       - ./mods:/mods:ro
       - ./plugins:/plugins:ro
 
@@ -58,16 +61,23 @@ services:
     volumes:
       - rcon:/opt/rcon-web-admin/db
 
-  coreprotect-db:
-    image: mysql:5.7
-    environment:
-      TZ: Asia/Tokyo
-      MYSQL_ROOT_PASSWORD: coreprotect
-      MYSQL_DATABASE: coreprotect
-      MYSQL_USER: coreprotect
-      MYSQL_PASSWORD: coreprotect
+  dynmap-nginx:
+    image: nginx:alpine
+    depends_on:
+      - dynmap-db
+      - dynmap-php
+    ports:
+      - "80:80"
     volumes:
-      - coreprotect-db:/var/lib/mysql
+      - dynmap-web:/var/www/html:ro
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+
+  dynmap-php:
+    build:
+      context: .
+      dockerfile: ./docker/dynmap-php/Dockerfile
+    volumes:
+      - dynmap-web:/var/www/html:ro
 
   dynmap-db:
     image: mysql:5.7
@@ -79,6 +89,17 @@ services:
       MYSQL_PASSWORD: dynmap
     volumes:
       - dynmap-db:/var/lib/mysql
+
+  coreprotect-db:
+    image: mysql:5.7
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: coreprotect
+      MYSQL_DATABASE: coreprotect
+      MYSQL_USER: coreprotect
+      MYSQL_PASSWORD: coreprotect
+    volumes:
+      - coreprotect-db:/var/lib/mysql
 
   luckperms-db:
     image: mysql:5.7
@@ -94,6 +115,7 @@ services:
 volumes:
   minecraft:
   rcon:
+  dynmap-web:
   coreprotect-db:
   dynmap-db:
   luckperms-db:
