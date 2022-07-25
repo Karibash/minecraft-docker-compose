@@ -17,6 +17,7 @@ services:
       DIFFICULTY: normal
       MEMORY: 1G
       TZ: Asia/Tokyo
+      RCON_PASSWORD: minecraft
       ENABLE_WHITELIST: TRUE
       ENFORCE_WHITELIST: TRUE
       COPY_CONFIG_DEST: /data
